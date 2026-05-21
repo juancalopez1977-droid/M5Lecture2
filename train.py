@@ -45,6 +45,19 @@ def main(data_path: str, out_path: str):
     auc = roc_auc_score(y_te, proba)
     print(f"ROC-AUC: {auc:.3f}")
     print(classification_report(y_te, (proba>0.5).astype(int)))
+    
+    from sklearn.metrics import precision_score, recall_score
+
+    y_pred = (proba > 0.5).astype(int)
+    precision = precision_score(y_te, y_pred)
+    recall = recall_score(y_te, y_pred)
+
+    # Persistencia de métricas en archivo local
+    with open("metrics.txt", "w") as f:
+        f.write(f"Precision: {precision:.4f}\n")
+        f.write(f"Recall: {recall:.4f}\n")
+
+    print(f"Métricas registradas -> Precision: {precision:.4f} | Recall: {recall:.4f}")
     # Guardar
     out = Path(out_path)
     out.parent.mkdir(parents=True, exist_ok=True)
